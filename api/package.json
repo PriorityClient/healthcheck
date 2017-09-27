@@ -1,0 +1,39 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf build && rm -f vipstatus.zip",
+    "build": "npm run build:install && npm run build:translate && npm run build:inject",
+    "zip": "cd build && zip -r ../vipstatus.zip ./*",
+    "build:translate": "babel $FILENAME > build/index_tmp.js",
+    "build:translate:auth": "echo \"process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'] \" > build/authorize.js && babel ./src/authorize.js >> build/authorize.js",
+    "build:inject": "echo \"process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'] \" > build/index.js && echo \"require('babel-polyfill')\" >> build/index.js && cat build/index_tmp.js >> build/index.js && rm build/index_tmp.js",
+    "build:install": "mkdir -p ./build/node_modules && cp package.json ./build && npm install --production --prefix ./build",
+    "build:clean": "npm run clean && npm run build",
+    "build:zip": "npm run build && npm run zip",
+    "build:deploy": "aws lambda update-function-code --publish --function-name $FUNCTION --zip-file fileb://`pwd`/vipstatus.zip",
+    "build:clean:zip": "npm run clean && npm run build:zip",
+    "build:clean:deploy": "npm run clean && npm run build:zip && npm run build:deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "babel-polyfill": "^6.26.0",
+    "jsonwebtoken": "^8.0.1",
+    "pg": "^7.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}

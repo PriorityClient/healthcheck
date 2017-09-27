@@ -2,14 +2,14 @@ version: 0.2
 phases:
   install:
     commands:
-      - npm install
+      - npm install --prefix ./ui
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
   build:
     commands:
       - echo Build started on `date`
-      - npm run build
+      - npm run build --prefix ./ui
   post_build:
     commands:
       - echo Build completed on `date`
@@ -17,4 +17,4 @@ artifacts:
   files:
     - "**/*"
   discard-paths: no
-  base-directory: "www"
+  base-directory: "ui/www"

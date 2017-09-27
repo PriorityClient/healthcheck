@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="VIP Crowd" />
+		<meta property="og:image" content="https://vipcrowd.com/VIP-Crowd-logo-black.png" />
+		<meta property="og:description" content="Check the status of VIP Crowd and its associated services" />
+
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
+
+		<link rel="stylesheet" href="/icon.css">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-deep_purple.min.css" />
+
+
+		<script defer src="/material.min.js"></script>
+		<script src="/axios.min.js"></script>
+		<title>VIP Crowd</title>
+
+  <style>
+
+.spinner {
+  width: 40px;
+  height: 40px;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgb(96,125,139);
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% {
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}
+
+
+
+
+
+
+    body { background: #eee; }
+		header img { max-height: 45px; }
+		header { background: #990099; }
+		.main-page { max-width: 1366px; margin:auto; }
+    .hidden { display: none; }
+		.full-size { width:100%; }
+    .center { text-align: center; }
+    .bold { font-weight:bold; }
+    .large { font-size:1.8em; }
+    .content-area {
+      background-color: #fff;
+      padding: 10px;
+    }
+
+    .status-error { color: #900; }
+    .status-ok { color: #090; }
+.status-card { min-height: 0; margin-bottom:15px; }
+    #error-message { margin: 30px; padding: 30px; background-color: #eee; border: 1px solid #C70039; color: #C70039; }
+  </style>
+<script>
+function $(id){
+	var ident = id.slice(1);
+	if(id.match(/^\#[^\.]*$/)) return document.getElementById(ident);
+	if(id.match(/^\.[^\#]*$/)) return document.getElementsByClassName(ident);
+	return document.querySelectorAll(ident);
+}
+
+function setup(api){
+  for(address in api){
+    updateStatus(address, api[address]);
+  }
+}
+
+function updateStatus(name, address){
+  console.log(name, address);
+  axios.get(address)
+    .then(function(){
+      $("#"+name+"-status-pending").classList.add("hidden");
+      $("#"+name+"-status-ok").classList.remove("hidden");
+    })
+    .catch(function(){
+      $("#"+name+"-status-pending").classList.add("hidden");
+      $("#"+name+"-status-error").classList.remove("hidden");
+      $("#all-status-error").classList.remove("hidden");
+    })
+}
+
+</script>
+	</head>
+	<body onLoad="setup({
+    backend: '{{{API_ADDRESS}}}',
+    profile: '{{{PROFILE_PAGE_ADDRESS}}}',
+    company: '{{{COMPANY_PAGE_ADDRESS}}}',
+    wordpress: '{{{WORDPRESS_PAGE_ADDRESS}}}'
+  })">
+
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+					<!-- Title -->
+          <div class="logo">
+            <img src="/VIP-Crowd-logo-white-358x100.png" alt="VIP Crowd" />
+          </div>
+				</div>
+			</header>
+
+			<main class="content-area main-page mdl-layout__content">
+        <h3 id="all-status-ok" class="hidden status-ok" ><i class="material-icons">thumb_up</i> All Services OK </h3>
+        <h3 id="all-status-error" class="hidden status-error" ><i class="material-icons">thumb_down</i> Service Error</h3>
+
+        <div id="wordpress-page" class="status-card mdl-card mdl-shadow--2dp">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Wordpress Page</h2>
+          </div>
+          <div class="mdl-card__menu">
+            <i id="wordpress-status-ok" class="hidden material-icons status-ok">cloud_done</i>
+            <i id="wordpress-status-error" class="hidden material-icons status-error">cloud_off</i>
+            <div id="wordpress-status-pending" class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="profile-page" class="status-card mdl-card mdl-shadow--2dp">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Profile Page</h2>
+          </div>
+          <div class="mdl-card__menu">
+            <i id="profile-status-ok" class="hidden material-icons status-ok">cloud_done</i>
+            <i id="profile-status-error" class="hidden material-icons status-error">cloud_off</i>
+            <div id="profile-status-pending" class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="company-page" class="status-card mdl-card mdl-shadow--2dp">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Company Page</h2>
+          </div>
+          <div class="mdl-card__menu">
+            <i id="company-status-ok" class="hidden material-icons status-ok">cloud_done</i>
+            <i id="company-status-error" class="hidden material-icons status-error">cloud_off</i>
+            <div id="company-status-pending" class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="backend" class="status-card mdl-card mdl-shadow--2dp">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Backend Api</h2>
+          </div>
+          <div class="mdl-card__menu">
+            <i id="backend-status-ok" class="hidden material-icons status-ok">cloud_done</i>
+            <i id="backend-status-error" class="hidden material-icons status-error">cloud_off</i>
+            <div id="backend-status-pending" class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+		</div>
+	</body>
+</html>
